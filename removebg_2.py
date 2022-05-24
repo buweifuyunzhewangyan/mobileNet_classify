@@ -1,3 +1,10 @@
+'''https://github.com/nadermx/backgroundremover'''
+
+'''
+1、安装backgroundremover库
+2、去除图像背景
+'''
+
 import os
 
 base_path = './data/'

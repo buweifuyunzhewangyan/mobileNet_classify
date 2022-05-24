@@ -1,3 +1,7 @@
+'''
+旨在将扣除来的object，替换不同的背景，进行数据增强
+'''
+
 import glob
 import os
 import cv2
