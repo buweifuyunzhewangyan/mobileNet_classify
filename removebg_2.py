@@ -7,9 +7,9 @@
 
 import os
 
-base_path = './data/'
-classes = range(20)
-classes = [str(i) for i in classes]
+base_path = './U_data/'
+classes = range(14)
+classes = ['0']
 for clas in classes:
     class_path = os.path.join(base_path,clas)
     pics = os.listdir(class_path)
