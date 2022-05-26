@@ -1,0 +1,13 @@
+{
+    "model": "Udun",
+    "height": 224,
+    "width": 224,
+    "class_number": 15,
+    "learning_rate": 0.00001,
+    "batch": 16,
+    "epochs": 100,
+    "train_dir": "U_data/train",
+    "eval_dir": "U_data/eval",
+    "save_dir": "save",
+    "weights": ""
+}

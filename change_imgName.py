@@ -4,9 +4,8 @@
 
 import os
 
-data_dir = './U_data/'
+data_dir = './U_data/test/'
 classes = os.listdir(data_dir)
-classes.remove('0')
 i = 0
 for clas in classes:
     clas_path = os.path.join(data_dir,clas)
