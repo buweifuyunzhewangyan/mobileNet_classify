@@ -7,7 +7,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.python.keras import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.layers import Dense,Conv2D,Reshape,GlobalAveragePooling2D
 
 
 def generate(batch, shape, ptrain, pval):
@@ -76,7 +76,10 @@ def train():
     #定义mobileNetV2 预训练网络
     model = Sequential()
     model.add(MobileNetV2(input_shape=shape,include_top=False,pooling='avg',weights='imagenet'))
-    model.add(Dense(n_class, activation='softmax'))
+    # model.add(Dense(n_class, activation='softmax'))
+    model.add(Conv2D(n_class,(1,1),padding='same',activation='softmax'))
+    model.add(GlobalAveragePooling2D())
+    model.add(Reshape((n_class,)))
 
     pre_weights = cfg['weights']
     if pre_weights and os.path.exists(pre_weights):
@@ -84,7 +87,7 @@ def train():
 
     opt = Adam(lr=float(cfg['learning_rate']))
     earlystop = EarlyStopping(monitor='val_accuracy', patience=5, verbose=0, mode='auto')
-    checkpoint = ModelCheckpoint(filepath=os.path.join(save_dir, '{}_weights.h5'.format(cfg['model'])),
+    checkpoint = ModelCheckpoint(filepath=os.path.join(save_dir, '{}.h5'.format(cfg['model'])),
                                  monitor='val_accuracy', save_best_only=True, save_weights_only=True)
 
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])

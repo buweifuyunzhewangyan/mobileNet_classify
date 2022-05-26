@@ -11,6 +11,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Dense
+import tensorflow as tf
 
 def eval_h5model():
     with open('config/config.json', 'r') as f:
@@ -34,7 +35,7 @@ def eval_h5model():
         batch_size=16,
         class_mode='categorical')
 
-    # test_loss,test_acc = model.evaluate(eval_generator)
+    test_loss,test_acc = model.evaluate(eval_generator)
 
     test_img = cv2.imread('./U_data/test/3/25.jpg')
     test_img = cv2.resize(test_img,(224,224))
@@ -42,6 +43,32 @@ def eval_h5model():
     result = model.predict(test_img)
     print(np.max(result),np.argmax(result))
 
-def eval_tflite():
-    print(1)
+def eval_tflite(model_path):
+    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter.allocate_tensors()
+    input_details = interpreter.get_input_details()
+    print(input_details)
+    output_details = interpreter.get_output_details()
+    print(output_details)
 
+    test_path = './U_data/test/'
+    classes = os.listdir(test_path)
+    for i,clas in enumerate(classes):
+        clas_path = os.path.join(test_path,clas)
+        images = os.listdir(clas_path)
+        for image in images:
+            image_path = os.path.join(clas_path,image)
+            x = cv2.imread(image_path)
+            x = cv2.resize(x, (224, 224))
+            x = np.expand_dims(x, axis=0) / 255.0
+            x = np.array(x, dtype='float32')
+            interpreter.set_tensor(input_details[0]['index'], x)
+
+            interpreter.invoke()
+            output_data = interpreter.get_tensor(output_details[0]['index'])
+
+            print(clas,i,np.argmax(output_data, axis=1),np.max(output_data))
+
+
+
+eval_tflite('./save/Udun_model_V1.tflite')
